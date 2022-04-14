@@ -1,3 +1,4 @@
+using FireboxTrucks.Web.DataContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,6 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FireboxTrucks.Web
 {
@@ -24,10 +30,15 @@ namespace FireboxTrucks.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<FireboxTrucksContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("ConnectionFireBoxTrucks"));
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, FireboxTrucksContext db)
         {
             if (env.IsDevelopment())
             {
@@ -41,6 +52,8 @@ namespace FireboxTrucks.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            db.Database.EnsureCreated();
 
             app.UseRouting();
 
