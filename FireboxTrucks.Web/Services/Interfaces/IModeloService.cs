@@ -8,9 +8,8 @@ namespace FireboxTrucks.Web.Services.Interfaces
 {
     interface IModeloService
     {
+        public List<Modelo> ObterModelos();
         public Modelo ObterModelo(int id);
         public Modelo IncluirModelo(Modelo modelo);
-        public Modelo ExcluirModelo(int id);
-        public Modelo AlterarModelo(Modelo modelo);
     }
 }

@@ -8,9 +8,10 @@ namespace FireboxTrucks.Web.Services.Interfaces
 {
     interface ICaminhaoService
     {
+        public List<Caminhao> ObterCaminhoes();
         public Caminhao ObterCaminhao(int id);
         public Caminhao IncluirCaminhao(Caminhao caminhao);
-        public Caminhao ExcluirCaminhao(int id);
         public Caminhao AlterarCaminhao(Caminhao caminhao);
+        public Caminhao ExcluirCaminhao(int id);
     }
 }

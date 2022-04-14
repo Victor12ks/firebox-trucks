@@ -4,6 +4,7 @@ using FireboxTrucks.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,13 @@ namespace FireboxTrucks.Web.Services
             _context = context;
         }
 
+        public List<Caminhao> ObterCaminhoes()
+        {
+            var caminhaos = _context.Caminhao
+                             .Include(c => c.Modelo)
+                             .ToList();
+            return caminhaos;
+        }
         public Caminhao ObterCaminhao(int id)
         {
             var caminhao = _context.Caminhao
@@ -25,7 +33,6 @@ namespace FireboxTrucks.Web.Services
                  .FirstOrDefault();
             return caminhao;
         }
-
         public Caminhao IncluirCaminhao(Caminhao caminhao)
         {
             if (caminhao.ValidarCaminhao())
@@ -36,7 +43,6 @@ namespace FireboxTrucks.Web.Services
             }
             return null;
         }
-
         public Caminhao ExcluirCaminhao(int id)
         {
             var caminhao = ObterCaminhao(id);
@@ -44,10 +50,16 @@ namespace FireboxTrucks.Web.Services
             _context.SaveChanges();
             return caminhao;
         }
-
         public Caminhao AlterarCaminhao(Caminhao caminhao)
         {
-            throw new System.NotImplementedException();
+
+            if (caminhao.ValidarCaminhao())
+            {
+                _context.Update(caminhao);
+                _context.SaveChanges();
+                return caminhao;
+            }
+            return null;
         }
     }
 }

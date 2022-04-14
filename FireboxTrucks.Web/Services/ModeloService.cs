@@ -1,11 +1,11 @@
 ﻿using FireboxTrucks.Web.DataContext;
 using FireboxTrucks.Web.Models;
+using FireboxTrucks.Web.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace FireboxTrucks.Web.Services.Interfaces
+namespace FireboxTrucks.Web.Services
 {
     public class ModeloService : IModeloService
     {
@@ -15,24 +15,25 @@ namespace FireboxTrucks.Web.Services.Interfaces
             _context = context;
         }
 
-        public Modelo AlterarModelo(Modelo modelo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Modelo ExcluirModelo(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public Modelo IncluirModelo(Modelo modelo)
         {
-            throw new NotImplementedException();
+            if (modelo.ValidarModelo())
+            {
+                _context.Add(modelo);
+                _context.SaveChanges();
+                return modelo;
+            }
+            return null;
         }
-
         public Modelo ObterModelo(int id)
         {
-            throw new NotImplementedException();
+            var modelo = _context.Modelo.Where(c => c.ID == id).FirstOrDefault();
+            return modelo;
+        }
+        public List<Modelo> ObterModelos()
+        {
+            var modelos = _context.Modelo.ToList();
+            return modelos;
         }
     }
 }
