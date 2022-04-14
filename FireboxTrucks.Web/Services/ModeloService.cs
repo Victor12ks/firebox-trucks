@@ -17,6 +17,8 @@ namespace FireboxTrucks.Web.Services
 
         public Modelo IncluirModelo(Modelo modelo)
         {
+            if (modelo == null)
+                return null;
             if (modelo.ValidarModelo())
             {
                 _context.Add(modelo);
@@ -27,13 +29,11 @@ namespace FireboxTrucks.Web.Services
         }
         public Modelo ObterModelo(int id)
         {
-            var modelo = _context.Modelo.Where(c => c.ID == id).FirstOrDefault();
-            return modelo;
+            return _context.Modelo.Where(c => c.ID == id).FirstOrDefault();
         }
         public List<Modelo> ObterModelos()
         {
-            var modelos = _context.Modelo.ToList();
-            return modelos;
+            return _context.Modelo.ToList();
         }
     }
 }

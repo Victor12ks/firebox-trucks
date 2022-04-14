@@ -35,6 +35,10 @@ namespace FireboxTrucks.Web.Services
         }
         public Caminhao IncluirCaminhao(Caminhao caminhao)
         {
+            if (caminhao == null)
+                return caminhao;
+
+            caminhao = PreencherModeloCaminhao(caminhao);
             if (caminhao.ValidarCaminhao())
             {
                 _context.Add(caminhao);
@@ -46,13 +50,19 @@ namespace FireboxTrucks.Web.Services
         public Caminhao ExcluirCaminhao(int id)
         {
             var caminhao = ObterCaminhao(id);
+            if (caminhao == null)
+                return caminhao;
+
             _context.Caminhao.Remove(caminhao);
             _context.SaveChanges();
             return caminhao;
         }
         public Caminhao AlterarCaminhao(Caminhao caminhao)
         {
+            if (caminhao == null)
+                return caminhao;
 
+            caminhao = PreencherModeloCaminhao(caminhao);
             if (caminhao.ValidarCaminhao())
             {
                 _context.Update(caminhao);
@@ -60,6 +70,13 @@ namespace FireboxTrucks.Web.Services
                 return caminhao;
             }
             return null;
+        }
+
+        private Caminhao PreencherModeloCaminhao(Caminhao caminhao)
+        {
+            var modelos = new ModeloService(_context).ObterModelos();
+            caminhao.Modelo = modelos.FirstOrDefault(x => x.ID == caminhao.ModeloID);
+            return caminhao;
         }
     }
 }

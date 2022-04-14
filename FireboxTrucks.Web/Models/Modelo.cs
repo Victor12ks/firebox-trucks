@@ -23,8 +23,8 @@ namespace FireboxTrucks.Web.Models
         [Display(Name = "Descrição")]
         public string Descricao { get; set; }
 
-        public bool ValidarNome() => !string.IsNullOrEmpty(this.Nome);
-        public bool ValidarDescricao() => !string.IsNullOrEmpty(this.Descricao);
         public bool ValidarModelo() => ValidarNome() && ValidarDescricao();
+        private bool ValidarNome() => !string.IsNullOrEmpty(this.Nome);
+        private bool ValidarDescricao() => !string.IsNullOrEmpty(this.Descricao);
     }
 }

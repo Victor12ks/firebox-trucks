@@ -47,7 +47,6 @@ namespace FireboxTrucks.Web.Controllers
             try
             {
                 var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => model.ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
-                model.Modelo = modelos.FirstOrDefault(x => x.ID == model.ModeloID);
                 if (ModelState.IsValid)
                 {
                     var caminhao = new CaminhaoService(_context).IncluirCaminhao(model);
@@ -85,7 +84,6 @@ namespace FireboxTrucks.Web.Controllers
             try
             {
                 var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => model.ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
-                model.Modelo = modelos.FirstOrDefault(x => x.ID == model.ModeloID);
                 var caminhao = new CaminhaoService(_context).AlterarCaminhao(model);
                 if (caminhao == null)
                     return NotFound();

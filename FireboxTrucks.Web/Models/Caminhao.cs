@@ -33,9 +33,9 @@ namespace FireboxTrucks.Web.Models
         public Modelo Modelo { get; set; }
 
 
-        public bool ValidarModelo() => ObterModelosPermitidos().Contains(this.Modelo.Nome.ToUpper());
-        public bool ValidarAnoModelo() => this.AnoFabricacao == DateTime.Now.Year;
-        public bool ValidarAnoFabricao() => this.AnoModelo == DateTime.Now.Year || this.AnoModelo == (DateTime.Now.Year + 1);
+        private bool ValidarModelo() => ObterModelosPermitidos().Contains(this.Modelo.Nome.ToUpper());
+        private bool ValidarAnoModelo() => this.AnoFabricacao == DateTime.Now.Year;
+        private bool ValidarAnoFabricao() => this.AnoModelo == DateTime.Now.Year || this.AnoModelo == (DateTime.Now.Year + 1);
         public bool ValidarCaminhao() => ValidarModelo() && ValidarAnoModelo() && ValidarAnoFabricao();
         public List<string> ObterModelosPermitidos() => new List<string> { "FM", "FH" };
 
