@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FireboxTrucks.Web.Models
 {
@@ -18,18 +18,26 @@ namespace FireboxTrucks.Web.Models
 
         public int ModeloID { get; set; }
 
-        [MaxLength(4)]
         [Display(Name = "Ano de Fabricação")]
-        [Required(ErrorMessage = "O campo Ano de Fabricação deve ser informado")]
-        [DataType(DataType.Text, ErrorMessage = "Ano de Fabricação em formato inválido")]
-        public int AnoFabricacao { get; set; }
+        [ReadOnly(true)]
+        [Editable(false, AllowInitialValue = false)]
+        public int AnoFabricacao { get; private set; }
 
-        [MaxLength(4)]
         [Display(Name = "Ano do Modelo")]
         [Required(ErrorMessage = "O campo Ano do Modelo deve ser informado")]
-        [DataType(DataType.Text, ErrorMessage = "Ano do Modelo em formato inválido")]
+        [RegularExpression(@"^([0-9]{4})$", ErrorMessage = "Ano do Modelo em formato inválido")]
         public int AnoModelo { get; set; }
 
+        [Display(Name = "Descrição")]
+        public string Descricao { get; set; }
         public Modelo Modelo { get; set; }
+
+
+        public bool ValidarModelo() => ObterModelosPermitidos().Contains(this.Modelo.Nome.ToUpper());
+        public bool ValidarAnoModelo() => this.AnoFabricacao == DateTime.Now.Year;
+        public bool ValidarAnoFabricao() => this.AnoModelo == DateTime.Now.Year || this.AnoModelo == (DateTime.Now.Year + 1);
+        public bool ValidarCaminhao() => ValidarModelo() && ValidarAnoModelo() && ValidarAnoFabricao();
+        public List<string> ObterModelosPermitidos() => new List<string> { "FM", "FH" };
+
     }
 }

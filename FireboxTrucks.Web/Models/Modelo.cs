@@ -8,23 +8,23 @@ namespace FireboxTrucks.Web.Models
 {
     public class Modelo
     {
+
         public Modelo()
         {
 
-        }
-        public Modelo(string nome, string descricao)
-        {
-            Nome = nome;
-            Descricao = descricao;
         }
 
         [Key]
         public int ID { get; private set; }
         [Required]
         [Display(Name = "Modelo")]
-        public string Nome { get; private set; }
+        public string Nome { get; set; }
         [Required]
         [Display(Name = "Descrição")]
-        public string Descricao { get; private set; }
+        public string Descricao { get; set; }
+
+        public bool ValidarNome() => !string.IsNullOrEmpty(this.Nome);
+        public bool ValidarDescricao() => !string.IsNullOrEmpty(this.Descricao);
+        public bool ValidarModelo() => ValidarNome() && ValidarDescricao();
     }
 }
