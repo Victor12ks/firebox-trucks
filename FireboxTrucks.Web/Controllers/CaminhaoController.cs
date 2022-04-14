@@ -1,5 +1,4 @@
 ﻿using FireboxTrucks.Web.DataContext;
-using FireboxTrucks.Web.Mock;
 using FireboxTrucks.Web.Models;
 using FireboxTrucks.Web.Services;
 using Microsoft.AspNetCore.Http;
@@ -20,24 +19,24 @@ namespace FireboxTrucks.Web.Controllers
         // GET: CaminhaoController
         public ActionResult Index()
         {
-            var caminhaos = _context.Caminhao.ToList();
-            var mock = ModeloMock.ObterModelos();
-            caminhaos.Add(new Caminhao() { AnoModelo = 2022, Descricao = "teste", Modelo = mock[0], ID = 12, ModeloID = 1 });
-            return View(caminhaos);
+            var caminhoes = new CaminhaoService(_context).ObterCaminhoes();
+            return View(caminhoes);
         }
 
         // GET: CaminhaoController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var caminhao = new CaminhaoService(_context).ObterCaminhao(id);
+            return View(caminhao);
         }
 
         // GET: CaminhaoController/Create
         public IActionResult Create()
         {
-            var mock = ModeloMock.ObterModelos();
-            ViewData["ModeloID"] = new SelectList(mock, "ID", "Nome");
-            return View();
+            var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => new Caminhao().ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
+            ViewData["ModeloID"] = new SelectList(modelos, "ID", "Nome");
+            var caminhao = new Caminhao();
+            return View(caminhao);
         }
 
         // POST: CaminhaoController/Create
@@ -47,18 +46,21 @@ namespace FireboxTrucks.Web.Controllers
         {
             try
             {
+                var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => model.ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
+                model.Modelo = modelos.FirstOrDefault(x => x.ID == model.ModeloID);
                 if (ModelState.IsValid)
                 {
                     var caminhao = new CaminhaoService(_context).IncluirCaminhao(model);
-                    return RedirectToAction("Index");
+                    if (caminhao == null)
+                        return NotFound();
+                    else
+                        return RedirectToAction("Index");
                 }
-                var mock = ModeloMock.ObterModelos();
-                ViewData["ModeloID"] = new SelectList(mock, "ID", "Nome");
+                ViewData["ModeloID"] = new SelectList(modelos, "ID", "Nome");
             }
-            catch (Exception ex)
+            catch
             {
-                var ok = ex;
-                return View();
+                return View(model);
             }
             return View(model);
         }
@@ -66,17 +68,29 @@ namespace FireboxTrucks.Web.Controllers
         // GET: CaminhaoController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => new Caminhao().ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
+            ViewData["ModeloID"] = new SelectList(modelos, "ID", "Nome");
+            var caminhao = new CaminhaoService(_context).ObterCaminhao(id);
+            if (caminhao == null)
+                return NotFound();
+
+            return View(caminhao);
         }
 
         // POST: CaminhaoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Caminhao model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => model.ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
+                model.Modelo = modelos.FirstOrDefault(x => x.ID == model.ModeloID);
+                var caminhao = new CaminhaoService(_context).AlterarCaminhao(model);
+                if (caminhao == null)
+                    return NotFound();
+
+                return View(caminhao);
             }
             catch
             {
@@ -85,9 +99,13 @@ namespace FireboxTrucks.Web.Controllers
         }
 
         // GET: CaminhaoController/Delete/5
-        public ActionResult Delete(int id)
+        public IActionResult Delete(int id)
         {
-            return View();
+            var caminhao = new CaminhaoService(_context).ObterCaminhao(id);
+            if (caminhao == null)
+                return NotFound();
+
+            return View(caminhao);
         }
 
         // POST: CaminhaoController/Delete/5
@@ -97,6 +115,7 @@ namespace FireboxTrucks.Web.Controllers
         {
             try
             {
+                var caminhao = new CaminhaoService(_context).ExcluirCaminhao(id);
                 return RedirectToAction(nameof(Index));
             }
             catch

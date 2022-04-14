@@ -1,18 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FireboxTrucks.Web.DataContext;
+using FireboxTrucks.Web.Models;
+using FireboxTrucks.Web.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FireboxTrucks.Web.Controllers
 {
     public class ModeloController : Controller
     {
+        private readonly FireboxTrucksContext _context;
+        public ModeloController(FireboxTrucksContext context)
+        {
+            _context = context;
+        }
         // GET: ModeloController
         public ActionResult Index()
         {
-            return View();
+            var modelos = new ModeloService(_context).ObterModelos();
+            return View(modelos);
         }
 
         // GET: ModeloController/Details/5
@@ -30,16 +36,22 @@ namespace FireboxTrucks.Web.Controllers
         // POST: ModeloController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Modelo model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var modelo = new ModeloService(_context).IncluirModelo(model);
+                    return RedirectToAction("Index");
+                }
             }
-            catch
+            catch (Exception ex)
             {
+                var ok = ex;
                 return View();
             }
+            return View(model);
         }
 
         // GET: ModeloController/Edit/5
