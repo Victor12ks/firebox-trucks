@@ -33,7 +33,7 @@ namespace FireboxTrucks.Web.Controllers
         // GET: CaminhaoController/Create
         public IActionResult Create()
         {
-            var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => new Caminhao().ObterModelosPermitidos().Contains(x.Nome.ToUpper()));
+            var modelos = new ModeloService(_context).ObterModelos().ToList().Where(x => new Caminhao().ObterModelosPermitidos().Contains(x.Nome.ToUpper())).ToList();
             ViewData["ModeloID"] = new SelectList(modelos, "ID", "Nome");
             var caminhao = new Caminhao();
             return View(caminhao);

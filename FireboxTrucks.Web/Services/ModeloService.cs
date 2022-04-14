@@ -33,6 +33,18 @@ namespace FireboxTrucks.Web.Services
         }
         public List<Modelo> ObterModelos()
         {
+            var modelos = _context.Modelo.ToList();
+            if (modelos == null || modelos.Count <= 0) modelos = PreencherModelosBase();
+            return modelos;
+        }
+        private List<Modelo> PreencherModelosBase()
+        {
+            _context.Modelo.AddRange(new Modelo() { Descricao = "Forward control Medium Xtreme", Nome = "FMX" },
+            new Modelo() { Descricao = "Forward control High entry", Nome = "FH" },
+            new Modelo() { Descricao = "Forward control Medium height cab", Nome = "FM" });
+
+            _context.SaveChanges();
+            
             return _context.Modelo.ToList();
         }
     }
